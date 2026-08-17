@@ -3,52 +3,52 @@ import random
 
 
 def student(env, name, arrival_time, service_time, counter, waiting_times):
-    # Wait until the student's arrival time
+    
     yield env.timeout(arrival_time - env.now)
 
     actual_arrival_time = env.now
 
-    # Request a registration counter
+    
     with counter.request() as request:
         yield request
 
-        # Calculate waiting time
+       
         start_time = env.now
         waiting_time = start_time - actual_arrival_time
 
         waiting_times.append(waiting_time)
 
-        # Registration/service
+        
         yield env.timeout(service_time)
 
 
 def run_simulation(number_of_counters, seed):
-    # Set the random seed for this trial
+    
     random.seed(seed)
 
-    # Create simulation environment
+    
     env = simpy.Environment()
 
-    # Create registration counters
+    
     counter = simpy.Resource(
         env,
         capacity=number_of_counters
     )
 
-    # Store waiting times
+    
     waiting_times = []
 
-    # Store arrival time
+    
     current_arrival_time = 0
 
-    # Create 10 students
+    # Basically, Dito natin i c-change yung number of student from starting test ko na 10 to 200
     for i in range(1, 201):
 
-        # Random arrival interval: 1–3 minutes
+        # then s-set nanatin yung ano yung interval ng arrival time ng bawat student
         arrival_interval = random.uniform(0.5, 1.5)
         current_arrival_time += arrival_interval
 
-        # Random registration time: 3–7 minutes
+        # And Registration time usually around gentong time natatapos depende sa requirements ng students
         service_time = random.uniform(3, 7)
 
         # Add student to simulation
@@ -76,20 +76,20 @@ def run_simulation(number_of_counters, seed):
 
 def main():
 
-    # Number of trials
+    
     number_of_trials = 10
 
-    # Counter configurations
+    
     counter_configurations = [1, 2, 3, 4, 5]
 
-    # Store results
+    
     results = {}
 
     print("=" * 60)
     print("STUDENT REGISTRATION SIMULATION")
     print("=" * 60)
 
-    # Run each counter configuration
+    
     for counters in counter_configurations:
 
         average_waits = []
@@ -98,7 +98,7 @@ def main():
 
         print(f"\n--- {counters} COUNTER(S) ---")
 
-        # Run 10 trials
+       
         for trial in range(1, number_of_trials + 1):
 
             average, maximum, minimum = run_simulation(
@@ -117,7 +117,7 @@ def main():
                 f"Min = {minimum:.2f} min"
             )
 
-        # Calculate overall averages
+        # Calculate the average
         overall_average = sum(average_waits) / len(average_waits)
         overall_maximum = sum(maximum_waits) / len(maximum_waits)
         overall_minimum = sum(minimum_waits) / len(minimum_waits)
@@ -133,7 +133,7 @@ def main():
             f"{overall_average:.2f} minutes"
         )
 
-    # Final comparison
+    # Comparing
     print("\n")
     print("=" * 60)
     print("FINAL COMPARISON")
